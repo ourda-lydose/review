@@ -15,7 +15,7 @@ RUN addgroup -g ${USER_GID} ${USER_NAME} \
 && adduser -h /opt/eshop -D -u ${USER_UID} -G ${USER_NAME} ${USER_NAME}
 
 USER ${USER_NAME}
-WORKDIR /opt/eshop
+WORKDIR /opt/reivew
 COPY --from=builder --chown=${USER_UID}:${USER_GID} /src/eshop/build/libs/*.jar app.jar
 
 EXPOSE 8080
