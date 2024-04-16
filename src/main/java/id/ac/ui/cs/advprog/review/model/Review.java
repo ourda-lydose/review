@@ -7,4 +7,6 @@ public class Review {
     private int rating;
     private String reviewText;
 
+    public Review(String reviewId, String boxId, int userId, int rating, String reviewText){
+    }
 }
