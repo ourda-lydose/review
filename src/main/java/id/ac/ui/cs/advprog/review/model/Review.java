@@ -1,5 +1,10 @@
 package id.ac.ui.cs.advprog.review.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Review {
     private String reviewId;
     private String boxId;
@@ -7,6 +12,25 @@ public class Review {
     private int rating;
     private String reviewText;
     private ReviewState status;
+
     public Review(String reviewId, String boxId, int userId, int rating, String reviewText){
+        this.reviewId = reviewId;
+        this.boxId = boxId;
+        this.userId = userId;
+        this.rating = rating;
+        this.reviewText = reviewText;
+        this.status = new PendingState(this);
+    }
+
+    public void approveReview() {
+        this.status.approveReview();
+    }
+
+    public void rejectReview() {
+        this.status.rejectReview();
+    }
+
+    public void editReview(int newRating, String newReviewText) {
+        this.status.editReview(newRating, newReviewText);
     }
 }
