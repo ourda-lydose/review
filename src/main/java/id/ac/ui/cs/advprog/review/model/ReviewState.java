@@ -3,5 +3,5 @@ public interface ReviewState {
     void editReview();
     void deleteReview();
     void approveReview();
-    void rejectReview();
+    void rejectReview(int newRating, String newReviewText);
 }
