@@ -55,6 +55,7 @@ class ReviewTest {
         assertTrue(mockReview.getStatus() instanceof PendingState);
     }
 
+    @Test
     void testApproveTransition() {
         mockReview.approveReview();
         assertTrue(mockReview.getStatus() instanceof ApprovedState);
@@ -65,6 +66,7 @@ class ReviewTest {
         assertTrue(mockReview.getStatus() instanceof RejectedState);
     }
 
+    @Test
     void testEditFromRejectedToPending() {
         mockReview.rejectReview();
 
@@ -75,6 +77,7 @@ class ReviewTest {
         assertTrue(mockReview.getStatus() instanceof PendingState);
     }
 
+    @Test
     void testEditFromAcceptedToPending() {
         mockReview.approveReview();
 
