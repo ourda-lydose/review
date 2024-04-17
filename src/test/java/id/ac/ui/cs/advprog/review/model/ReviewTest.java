@@ -11,21 +11,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ReviewTest {
 
-    private Review review;
+    private Review mockReview;
     private String reviewId;
     private String boxId;
     private int userId;
 
     @BeforeEach
     void setUp() {
-        String reviewId = "user-box-1";
-        String boxId = "box-1";
-        int userId = 1;
+        mockReview = new Review("user-box-1", "box-1", 1, 5, "Box bikin tidak turu");
     }
 
     @Test
-    void testCreateReview () {
-        review = new Review(reviewId, boxId, userId, 5, "Box bikin tidak turu");
+    void testCreateReview() {
+        Review review = new Review("user-box-1", "box-1", 1, 5, "Box bikin tidak turu");
 
         assertEquals("user-box-1", review.getReviewId());
         assertEquals("box-1", review.getBoxId());
@@ -35,20 +33,55 @@ class ReviewTest {
     }
 
     @Test
-    void testCreateInvalidRating () {
+    void testCreateInvalidRating() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Review(reviewId, boxId, userId, -1, "Invalid rating (negative)");
+            new Review("user-box-1", "box-1", 1, -1, "negative rating");
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            new Review(reviewId, boxId, userId, 6, "Invalid rating (positive overflow)");
+            new Review("user-box-1", "box-1", 1, 6, "positive overflow rating");
         });
     }
 
     @Test
     void testCreateInvalidReviewText() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Review(reviewId, boxId, userId, 3, "");
+            new Review("user-box-1", "box-1", 1, 5, "");
         });
+    }
+
+    @Test
+    void testInitialPendingState() {
+        assertTrue(mockReview.getStatus() instanceof PendingState);
+    }
+
+    void testApproveTransition() {
+        mockReview.approve();
+        assertTrue(mockReview.getState() instanceof ApprovedState);
+    }
+
+    void testRejectTransition() {
+        mockReview.reject();
+        assertTrue(review.getState() instanceof RejectedState);
+    }
+
+    void testEditFromRejectedToPending() {
+        review.reject();
+
+        int newRating = 4;
+        String newReviewText = "plis tolong eksep";
+        review.edit(newRating, newReviewText);
+
+        assertTrue(review.getState() instanceof PendingState);
+    }
+
+    void testEditFromAcceptedToPending() {
+        review.accept();
+
+        int newRating = 4;
+        String newReviewText = "plis tolong eksep lagi;
+        review.edit(newRating, newReviewText);
+
+        assertTrue(review.getState() instanceof PendingState);
     }
 }
