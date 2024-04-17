@@ -9,7 +9,6 @@ public class PendingState implements ReviewState {
 
     @Override
     public void editReview(int newRating, String newReviewText) {
-        
     }
 
     @Override
@@ -20,9 +19,5 @@ public class PendingState implements ReviewState {
     @Override
     public void rejectReview() {
         review.setStatus(new RejectedState(review));
-    }
-
-    @Override
-    public void deleteReview() {
     }
 }

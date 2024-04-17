@@ -15,17 +15,11 @@ public class RejectedState implements ReviewState {
     }
 
     @Override
-    public void deleteReview() {
-
-    }
-
-    @Override
     public void approveReview() {
         throw new IllegalStateException("Bro must be kidding for approving a rejected review...");
     }
 
     @Override
     public void rejectReview() {
-
     }
 }

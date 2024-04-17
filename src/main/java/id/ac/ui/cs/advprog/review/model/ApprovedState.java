@@ -15,11 +15,6 @@ public class ApprovedState implements ReviewState {
     }
 
     @Override
-    public void deleteReview() {
-
-    }
-
-    @Override
     public void approveReview() {
     }
 
