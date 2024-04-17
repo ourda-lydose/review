@@ -56,32 +56,32 @@ class ReviewTest {
     }
 
     void testApproveTransition() {
-        mockReview.approve();
-        assertTrue(mockReview.getState() instanceof ApprovedState);
+        mockReview.approveReview();
+        assertTrue(mockReview.getStatus() instanceof ApprovedState);
     }
 
     void testRejectTransition() {
-        mockReview.reject();
-        assertTrue(review.getState() instanceof RejectedState);
+        mockReview.rejectReview();
+        assertTrue(mockReview.getStatus() instanceof RejectedState);
     }
 
     void testEditFromRejectedToPending() {
-        review.reject();
+        mockReview.rejectReview();
 
         int newRating = 4;
         String newReviewText = "plis tolong eksep";
-        review.edit(newRating, newReviewText);
+        mockReview.editReview(newRating, newReviewText);
 
-        assertTrue(review.getState() instanceof PendingState);
+        assertTrue(mockReview.getStatus() instanceof PendingState);
     }
 
     void testEditFromAcceptedToPending() {
-        review.accept();
+        mockReview.approveReview();
 
         int newRating = 4;
         String newReviewText = "plis tolong eksep lagi";
-        review.edit(newRating, newReviewText);
+        mockReview.editReview(newRating, newReviewText);
 
-        assertTrue(review.getState() instanceof PendingState);
+        assertTrue(mockReview.getStatus() instanceof PendingState);
     }
 }
