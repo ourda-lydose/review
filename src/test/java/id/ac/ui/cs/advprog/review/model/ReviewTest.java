@@ -79,7 +79,7 @@ class ReviewTest {
         review.accept();
 
         int newRating = 4;
-        String newReviewText = "plis tolong eksep lagi;
+        String newReviewText = "plis tolong eksep lagi";
         review.edit(newRating, newReviewText);
 
         assertTrue(review.getState() instanceof PendingState);
