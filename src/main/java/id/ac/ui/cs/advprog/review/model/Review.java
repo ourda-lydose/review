@@ -8,12 +8,12 @@ import lombok.Setter;
 public class Review {
     private String reviewId;
     private String boxId;
-    private int userId;
+    private Integer userId;
     private int rating;
     private String reviewText;
     private ReviewState status;
 
-    public Review(String reviewId, String boxId, int userId, int rating, String reviewText){
+    public Review(String reviewId, String boxId, Integer userId, int rating, String reviewText){
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }
