@@ -18,14 +18,13 @@ class ReviewTest {
 
     @BeforeEach
     void setUp() {
-        mockReview = new Review("user-box-1", "box-1", 1, 5, "Box bikin tidak turu");
+        mockReview = new Review(1L, "box-1", 1, 5, "Box bikin tidak turu");
     }
 
     @Test
     void testCreateReview() {
-        Review review = new Review("user-box-1", "box-1", 1, 5, "Box bikin tidak turu");
+        Review review = new Review(1L,"box-1", 1, 5, "Box bikin tidak turu");
 
-        assertEquals("user-box-1", review.getReviewId());
         assertEquals("box-1", review.getBoxId());
         assertEquals(1, review.getUserId());
         assertEquals(5, review.getRating());
@@ -35,18 +34,18 @@ class ReviewTest {
     @Test
     void testCreateInvalidRating() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Review("user-box-1", "box-1", 1, -1, "negative rating");
+            new Review(1L, "box-1", 1, -1, "negative rating");
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            new Review("user-box-1", "box-1", 1, 6, "positive overflow rating");
+            new Review(1L, "box-1", 1, 6, "positive overflow rating");
         });
     }
 
     @Test
     void testCreateInvalidReviewText() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Review("user-box-1", "box-1", 1, 5, "");
+            new Review(1L, "box-1", 1, 5, "");
         });
     }
 

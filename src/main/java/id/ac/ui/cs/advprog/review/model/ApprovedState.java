@@ -16,10 +16,11 @@ public class ApprovedState implements ReviewState {
 
     @Override
     public void approveReview() {
+        review.setStatus(new ApprovedState(review));
     }
 
     @Override
     public void rejectReview() {
-        throw new IllegalStateException("No, you cant do that :((");
+        throw new IllegalStateException("Can't reject approved review");
     }
 }

@@ -9,6 +9,9 @@ public class PendingState implements ReviewState {
 
     @Override
     public void editReview(int newRating, String newReviewText) {
+        review.setRating(newRating);
+        review.setReviewText(newReviewText);
+        review.setStatus(new PendingState(review));
     }
 
     @Override

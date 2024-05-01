@@ -9,9 +9,9 @@ public class RejectedState implements ReviewState {
 
     @Override
     public void editReview(int newRating, String newReviewText) {
-        review.setStatus(new PendingState(review));
         review.setRating(newRating);
         review.setReviewText(newReviewText);
+        review.setStatus(new PendingState(review));
     }
 
     @Override
@@ -21,5 +21,6 @@ public class RejectedState implements ReviewState {
 
     @Override
     public void rejectReview() {
+        review.setStatus(new RejectedState(review));
     }
 }
