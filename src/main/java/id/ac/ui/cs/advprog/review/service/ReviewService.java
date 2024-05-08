@@ -7,6 +7,8 @@ import id.ac.ui.cs.advprog.review.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,6 +18,7 @@ import id.ac.ui.cs.advprog.review.model.PendingState;
 import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
 
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 @Service
@@ -77,6 +80,28 @@ public class ReviewService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the review");
         }
         reviewRepository.delete(existingReview);
+    }
+
+    // implementasi asyc, tp blm coba biar terintegrasi lebih si, yg penting ud bikin
+    @Async
+    public Future<Review> addReviewAsync(ReviewDTO reviewDTO, Integer userId) {
+        Review review = new Review();
+        review.setBoxId(reviewDTO.getBoxId());
+        review.setUserId(userId);
+        review.setRating(reviewDTO.getRating());
+        review.setReviewText(reviewDTO.getReviewText());
+        review.setStatusString(reviewDTO.getStatus());
+
+        review.setStatus(new PendingState(review));
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Review savedReview = reviewRepository.save(review);
+        return new AsyncResult<>(savedReview);
     }
 
 //    public Integer getAuthenticatedUserId(String token) {
