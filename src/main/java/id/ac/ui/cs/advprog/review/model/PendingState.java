@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.review.model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(value = {"review"})
 public class PendingState implements ReviewState {
     private final Review review;
 

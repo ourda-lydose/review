@@ -31,10 +31,10 @@ public class Review {
     @Transient
     private ReviewState status;
 
-    // for DB
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private StatusEnum statusString;
+//     for DB
+//    @Enumerated(EnumType.STRING)
+    @Column(name = "status_string", nullable = false)
+    private String statusString;
 
     public Review(Long reviewId, String boxId, Integer userId, int rating, String reviewText){
         if (rating < 1 || rating > 5) {
@@ -50,7 +50,7 @@ public class Review {
         this.rating = rating;
         this.reviewText = reviewText;
         this.status = new PendingState(this);
-        this.statusString = PENDING;
+        this.statusString = PENDING.toString();
     }
 
     public Review() {
