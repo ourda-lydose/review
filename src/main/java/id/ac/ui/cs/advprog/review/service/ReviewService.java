@@ -26,7 +26,6 @@ public class ReviewService {
 
     private static final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
-
     private final RestTemplate restTemplate;
     private final ReviewRepository reviewRepository;
     @Value("${auth.service.base-url}")
@@ -153,13 +152,14 @@ public class ReviewService {
 //    }
 
     public User getAuthenticatedUser(String token) {
-        logger.info("Token: " + token);
+//        logger.info("Token: " + token);
 
         if (token == null || token.isEmpty()) {
             throw new IllegalArgumentException("Token is null or empty");
         }
 
-        logger.info("sampe sini");
+//      logger.info("sampe sini");
+
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
@@ -184,8 +184,6 @@ public class ReviewService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User is not authenticated");
         }
     }
-
-
 
     public List<Review> getReviewsByUserId(Long userId) {
         return reviewRepository.findByUserId(userId);

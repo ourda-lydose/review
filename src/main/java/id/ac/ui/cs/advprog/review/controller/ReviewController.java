@@ -21,8 +21,6 @@ public class ReviewController {
         logger.setLevel(Level.INFO);
     }
 
-
-
     @Autowired
     private ReviewService reviewService;
 
