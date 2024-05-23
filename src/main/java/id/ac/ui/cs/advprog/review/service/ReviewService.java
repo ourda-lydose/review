@@ -61,12 +61,23 @@ public class ReviewService {
         return CompletableFuture.completedFuture(savedReview);
     }
 
-    // TODO: make sure yang bisa accept cuma ADMIN
+    // TODO: make sure only admin can access this (implement on api gateway)
+    // TODO: return error/text if state not compatible
     public void acceptReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " notTTTTTTT found"));
 
         review.approveReview();
+        reviewRepository.save(review);
+    }
+
+    // TODO: make sure only admin can access this (implement on api gateway)
+    // TODO: return error/text if state not compatible
+    public void rejectReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " notTTTTTTT found"));
+
+        review.rejectReview();
         reviewRepository.save(review);
     }
 

@@ -66,12 +66,20 @@ public class ReviewController {
         }
     }
 
-
-
     @PostMapping("/{reviewId}/accept")
     public ResponseEntity<?> acceptReview(@PathVariable Long reviewId) {
         try {
             reviewService.acceptReview(reviewId);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{reviewId}/reject")
+    public ResponseEntity<?> rejectReview(@PathVariable Long reviewId) {
+        try {
+            reviewService.rejectReview(reviewId);
             return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
