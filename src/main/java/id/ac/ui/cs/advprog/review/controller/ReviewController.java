@@ -33,6 +33,7 @@ public class ReviewController {
         });
     }
 
+    // TODO: validate user
     @PutMapping("/{reviewId}")
     public ResponseEntity<?> updateReview(@PathVariable Long reviewId, @RequestBody ReviewDTO reviewDTO) {
         try {
@@ -43,11 +44,22 @@ public class ReviewController {
         }
     }
 
+    // TODO: validate user
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
         try {
             reviewService.deleteReview(reviewId);
             return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<?> getReviewById(@PathVariable Long reviewId) {
+        try {
+            Review review = reviewService.getReviewById(reviewId);
+            return ResponseEntity.ok(review);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -65,14 +77,16 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
-    @GetMapping("/{reviewId}")
-    public ResponseEntity<?> getReviewById(@PathVariable Long reviewId) {
-        try {
-            Review review = reviewService.getReviewById(reviewId);
-            return ResponseEntity.ok(review);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    @GetMapping("/box/{boxId}")
+    public ResponseEntity<List<Review>> getReviewsByBox(@RequestParam(value = "rating", required = false) Integer rating, String boxId) {
+        List<Review> reviews;
+
+        if (rating != null) {
+            reviews = reviewService.getReviewsByBoxIdAndRating(boxId, rating);
+        } else {
+            reviews = reviewService.getReviewsByBoxId(boxId);
         }
+        return ResponseEntity.ok(reviews);
     }
 
     @PostMapping("/{reviewId}/accept")

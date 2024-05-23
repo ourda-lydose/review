@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    List<Review> findByUserId(Long userId);
     List<Review> findByBoxId(String boxId);
+    List<Review> findByBoxIdAndRating(String boxId, int rating);
 }

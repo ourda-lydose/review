@@ -47,6 +47,11 @@ public class ReviewService {
         return optionalReview.orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
     }
 
+    // TODO: implement throw error if needed (will implement this asap)
+    public List<Review> getReviewsByBoxIdAndRating(String boxId, int rating) {
+        return reviewRepository.findByBoxIdAndRating(boxId, rating);
+    }
+
     // reference: https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html
     @Async
     public CompletableFuture<Review> createReview(ReviewDTO reviewDTO) {
