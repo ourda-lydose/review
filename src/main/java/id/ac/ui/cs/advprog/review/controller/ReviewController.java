@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.review.controller;
 
-import id.ac.ui.cs.advprog.review.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +17,8 @@ import java.util.logging.*;
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {
-    private static final Logger logger = Logger.getLogger(ReviewService.class.getName());
-
-    public ReviewController() {
-        // Set logging level to INFO
-        logger.setLevel(Level.INFO);
-    }
-
     @Autowired
     private ReviewService reviewService;
-
-    @Autowired
-    private ReviewRepository reviewRepository;
 
     @PostMapping
     public CompletableFuture<ResponseEntity<?>> createReview(@RequestBody ReviewDTO reviewDTO) {
@@ -42,6 +31,26 @@ public class ReviewController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create review");
             }
         });
+    }
+
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<?> updateReview(@PathVariable Long reviewId, @RequestBody ReviewDTO reviewDTO) {
+        try {
+            Review updatedReview = reviewService.updateReview(reviewId, reviewDTO);
+            return ResponseEntity.ok(updatedReview);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
+        try {
+            reviewService.deleteReview(reviewId);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping
@@ -85,24 +94,4 @@ public class ReviewController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
-
-
-//    @PutMapping("/{reviewId}")
-//    public ResponseEntity<?> updateReview(@RequestHeader("Authorization") String token, @PathVariable("reviewId") Long reviewId, @RequestBody ReviewDTO reviewDTO) {
-//        Integer userId = reviewService.getAuthenticatedUserId(token);
-//
-//        Review updatedReview = reviewService.updateReview(reviewId, reviewDTO, userId);
-//
-//        return ResponseEntity.ok(updatedReview);
-//    }
-//
-//    @DeleteMapping("/{reviewId}")
-//    public ResponseEntity<?> deleteReview(@RequestHeader("Authorization") String token, @PathVariable("reviewId") Long reviewId) {
-//        Integer userId = reviewService.getAuthenticatedUserId(token);
-//
-//        reviewService.deleteReview(reviewId, userId);
-//
-//        return ResponseEntity.ok().build();
-//    }
 }

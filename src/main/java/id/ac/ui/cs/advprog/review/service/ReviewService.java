@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 @Service
@@ -28,8 +27,6 @@ public class ReviewService {
     private static final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
     private final ReviewRepository reviewRepository;
-    @Value("${auth.service.base-url}")
-    private String authServiceBaseUrl;
 
     @Autowired
     public ReviewService(ReviewRepository reviewRepository) {
@@ -56,6 +53,21 @@ public class ReviewService {
         Review review = new Review(reviewDTO.getBoxId(), reviewDTO.getUserId(), reviewDTO.getRating(), reviewDTO.getReviewText());
         Review savedReview = reviewRepository.save(review);
         return CompletableFuture.completedFuture(savedReview);
+    }
+
+    public Review updateReview(Long reviewId, ReviewDTO reviewDTO) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
+
+        // TODO: validate user input, return error if any constraint is violated
+        review.updateReview(reviewDTO.getRating(), reviewDTO.getReviewText());
+        return reviewRepository.save(review);
+    }
+
+    public void deleteReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
+        reviewRepository.delete(review);
     }
 
     // TODO: make sure only admin can access this (implement on api gateway)

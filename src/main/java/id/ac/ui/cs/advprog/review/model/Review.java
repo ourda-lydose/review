@@ -81,7 +81,7 @@ public class Review {
         this.status.rejectReview();
     }
 
-    public void editReview(int newRating, String newReviewText) {
+    public void updateReview(int newRating, String newReviewText) {
         this.status.editReview(newRating, newReviewText);
     }
 }

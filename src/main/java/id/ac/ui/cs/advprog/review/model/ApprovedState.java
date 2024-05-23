@@ -8,15 +8,14 @@ public class ApprovedState implements ReviewState {
     }
 
     @Override
-    public void editReview(int newRating, String newReviewText) {
-        review.setStatus(new PendingState(review));
+    public void updateReview(int newRating, String newReviewText) {
         review.setRating(newRating);
         review.setReviewText(newReviewText);
+        review.setStatus(new PendingState(review));
     }
 
     @Override
     public void approveReview() {
-        review.setStatus(new ApprovedState(review));
     }
 
     @Override
