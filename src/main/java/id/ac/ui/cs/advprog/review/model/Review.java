@@ -56,7 +56,7 @@ public class Review {
 
     public Review (){}
 
-    public Review(Long reviewId, String boxId, Integer userId, int rating, String reviewText){
+    public Review(String boxId, Integer userId, int rating, String reviewText){
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }

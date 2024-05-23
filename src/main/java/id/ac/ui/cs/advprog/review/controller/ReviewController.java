@@ -12,6 +12,7 @@ import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.*;
 
 @RestController
@@ -29,6 +30,19 @@ public class ReviewController {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @PostMapping
+    public CompletableFuture<ResponseEntity<?>> createReview(@RequestBody ReviewDTO reviewDTO) {
+        CompletableFuture<Review> future = reviewService.createReview(reviewDTO);
+
+        return future.thenApply(review -> {
+            if (review != null) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(review);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create review");
+            }
+        });
+    }
 
     @GetMapping
     public ResponseEntity<List<Review>> getReviews(@RequestParam(value = "boxId", required = false) String boxId) {
@@ -51,6 +65,8 @@ public class ReviewController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+
 
     @PostMapping("/{reviewId}/accept")
     public ResponseEntity<?> acceptReview(@PathVariable Long reviewId) {

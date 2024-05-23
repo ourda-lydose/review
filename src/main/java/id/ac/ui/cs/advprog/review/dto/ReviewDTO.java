@@ -10,5 +10,5 @@ public class ReviewDTO {
     private Integer userId;
     private int rating;
     private String reviewText;
-    private String status;
+    private String statusString;
 }

@@ -20,6 +20,7 @@ import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
@@ -52,7 +53,15 @@ public class ReviewService {
         return optionalReview.orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
     }
 
-    //
+    // reference: https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html
+    @Async
+    public CompletableFuture<Review> createReview(ReviewDTO reviewDTO) {
+        Review review = new Review(reviewDTO.getBoxId(), reviewDTO.getUserId(), reviewDTO.getRating(), reviewDTO.getReviewText());
+        Review savedReview = reviewRepository.save(review);
+        return CompletableFuture.completedFuture(savedReview);
+    }
+
+    // TODO: make sure yang bisa accept cuma ADMIN
     public void acceptReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " notTTTTTTT found"));
@@ -63,47 +72,29 @@ public class ReviewService {
 
 
 
-
-
-
-
-//    public Review addReview(ReviewDTO reviewDTO, Integer userId) {
-//        Review review = new Review();
-//        review.setBoxId(reviewDTO.getBoxId());
-//        review.setUserId(userId);
-//        review.setRating(reviewDTO.getRating());
-//        review.setReviewText(reviewDTO.getReviewText());
-//        review.setStatusString(reviewDTO.getStatus()); // Set statusString here
+//    public Review updateReview(Long reviewId, ReviewDTO reviewDTO, Integer userId) {
+//        Review existingReview = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found"));
 //
-//        // Set status to PENDING
-//        review.setStatus(new PendingState(review));
+//        if (!existingReview.getUserId().equals(userId)) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the review");
+//        }
 //
-//        return reviewRepository.save(review);
+//        existingReview.setRating(reviewDTO.getRating());
+//        existingReview.setReviewText(reviewDTO.getReviewText());
+//        return reviewRepository.save(existingReview);
 //    }
 
-    public Review updateReview(Long reviewId, ReviewDTO reviewDTO, Integer userId) {
-        Review existingReview = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found"));
-
-        if (!existingReview.getUserId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the review");
-        }
-
-        existingReview.setRating(reviewDTO.getRating());
-        existingReview.setReviewText(reviewDTO.getReviewText());
-        return reviewRepository.save(existingReview);
-    }
-
-    public void deleteReview(Long reviewId, Integer userId) {
-//        int userId = getAuthenticatedUserId(token);
-
-        Review existingReview = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found"));
-
-        if (!existingReview.getUserId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the review");
-        }
-        reviewRepository.delete(existingReview);
-    }
+//    public void deleteReview(Long reviewId, Integer userId) {
+////        int userId = getAuthenticatedUserId(token);
+//
+//        Review existingReview = reviewRepository.findById(reviewId)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found"));
+//
+//        if (!existingReview.getUserId().equals(userId)) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the review");
+//        }
+//        reviewRepository.delete(existingReview);
+//    }
 
     // implementasi asyc, tp blm coba biar terintegrasi lebih si, yg penting ud bikin
 //    @Async
