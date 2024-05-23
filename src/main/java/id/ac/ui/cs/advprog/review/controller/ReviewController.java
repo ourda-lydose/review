@@ -87,33 +87,6 @@ public class ReviewController {
     }
 
 
-//    @PostMapping
-//    public ResponseEntity<?> createReview(@RequestHeader("Authorization") String token, @RequestBody ReviewDTO reviewDTO) {
-//        System.out.println("Token received: " + token);
-//        User user = reviewService.getAuthenticatedUser(token);
-//
-//        Review review = reviewService.addReview(reviewDTO, user.getId());
-//
-//        return ResponseEntity.ok(review);
-//    }
-
-//    @PostMapping
-//    public ResponseEntity<?> createReview(@RequestHeader("Authorization") String token, @RequestBody ReviewDTO reviewDTO) {
-//        System.out.println("Token received: " + token);
-//        User user = reviewService.getAuthenticatedUser(token);
-//
-//        // Set the default status to PENDING if not provided in the request
-//        if (reviewDTO.getStatus() == null || reviewDTO.getStatus().isEmpty()) {
-//            reviewDTO.setStatus("PENDING");
-//        }
-//
-//        // Create and add the review using the service method
-//        Review review = reviewService.addReview(reviewDTO, user.getId());
-//
-//        return ResponseEntity.ok(review);
-//    }
-
-
 
 //    @PutMapping("/{reviewId}")
 //    public ResponseEntity<?> updateReview(@RequestHeader("Authorization") String token, @PathVariable("reviewId") Long reviewId, @RequestBody ReviewDTO reviewDTO) {
