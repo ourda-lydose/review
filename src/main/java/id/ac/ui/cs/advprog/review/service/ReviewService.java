@@ -18,12 +18,13 @@ import id.ac.ui.cs.advprog.review.model.PendingState;
 import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 @Service
 public class ReviewService {
-
     private static final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
     private final RestTemplate restTemplate;
@@ -37,25 +38,48 @@ public class ReviewService {
         this.reviewRepository = reviewRepository;
     }
 
+    // repository-ish
     public List<Review> getAllReviews() {
         return (List<Review>) reviewRepository.findAll();
     }
 
-    public Review addReview(ReviewDTO reviewDTO, Integer userId) {
-        Review review = new Review();
-        review.setBoxId(reviewDTO.getBoxId());
-        review.setUserId(userId);
-        review.setRating(reviewDTO.getRating());
-        review.setReviewText(reviewDTO.getReviewText());
-        review.setStatusString(reviewDTO.getStatus()); // Set statusString here
+    public List<Review> getReviewsByBoxId(String boxId) {
+        return reviewRepository.findByBoxId(boxId);
+    }
 
-        // Set status to PENDING
-        review.setStatus(new PendingState(review));
+    public Review getReviewById(Long reviewId) {
+        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
+        return optionalReview.orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
+    }
 
-        return reviewRepository.save(review);
+    //
+    public void acceptReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " notTTTTTTT found"));
+
+        review.approveReview();
+        reviewRepository.save(review);
     }
 
 
+
+
+
+
+
+//    public Review addReview(ReviewDTO reviewDTO, Integer userId) {
+//        Review review = new Review();
+//        review.setBoxId(reviewDTO.getBoxId());
+//        review.setUserId(userId);
+//        review.setRating(reviewDTO.getRating());
+//        review.setReviewText(reviewDTO.getReviewText());
+//        review.setStatusString(reviewDTO.getStatus()); // Set statusString here
+//
+//        // Set status to PENDING
+//        review.setStatus(new PendingState(review));
+//
+//        return reviewRepository.save(review);
+//    }
 
     public Review updateReview(Long reviewId, ReviewDTO reviewDTO, Integer userId) {
         Review existingReview = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found"));
@@ -82,26 +106,26 @@ public class ReviewService {
     }
 
     // implementasi asyc, tp blm coba biar terintegrasi lebih si, yg penting ud bikin
-    @Async
-    public Future<Review> addReviewAsync(ReviewDTO reviewDTO, Integer userId) {
-        Review review = new Review();
-        review.setBoxId(reviewDTO.getBoxId());
-        review.setUserId(userId);
-        review.setRating(reviewDTO.getRating());
-        review.setReviewText(reviewDTO.getReviewText());
-        review.setStatusString(reviewDTO.getStatus());
-
-        review.setStatus(new PendingState(review));
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        Review savedReview = reviewRepository.save(review);
-        return new AsyncResult<>(savedReview);
-    }
+//    @Async
+//    public Future<Review> addReviewAsync(ReviewDTO reviewDTO, Integer userId) {
+//        Review review = new Review();
+//        review.setBoxId(reviewDTO.getBoxId());
+//        review.setUserId(userId);
+//        review.setRating(reviewDTO.getRating());
+//        review.setReviewText(reviewDTO.getReviewText());
+//        review.setStatusString(reviewDTO.getStatus());
+//
+//        review.setStatus(new PendingState(review));
+//
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Review savedReview = reviewRepository.save(review);
+//        return new AsyncResult<>(savedReview);
+//    }
 
 //    public Integer getAuthenticatedUserId(String token) {
 //        logger.info("ini token: " + token);
@@ -151,39 +175,39 @@ public class ReviewService {
 //        }
 //    }
 
-    public User getAuthenticatedUser(String token) {
-//        logger.info("Token: " + token);
-
-        if (token == null || token.isEmpty()) {
-            throw new IllegalArgumentException("Token is null or empty");
-        }
-
-//      logger.info("sampe sini");
-
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        logger.info("Headers: " + headers);
-
-        ResponseEntity<User> response = restTemplate.exchange(
-                "http://localhost:8080/users/me",
-                HttpMethod.GET,
-                entity,
-                User.class);
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            User user = response.getBody();
-            if (user != null) {
-                return user;
-            } else {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response body");
-            }
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User is not authenticated");
-        }
-    }
+//    public User getAuthenticatedUser(String token) {
+////        logger.info("Token: " + token);
+//
+//        if (token == null || token.isEmpty()) {
+//            throw new IllegalArgumentException("Token is null or empty");
+//        }
+//
+////      logger.info("sampe sini");
+//
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Authorization", token);
+//        HttpEntity<String> entity = new HttpEntity<>(headers);
+//
+//        logger.info("Headers: " + headers);
+//
+//        ResponseEntity<User> response = restTemplate.exchange(
+//                "http://localhost:8080/users/me",
+//                HttpMethod.GET,
+//                entity,
+//                User.class);
+//
+//        if (response.getStatusCode() == HttpStatus.OK) {
+//            User user = response.getBody();
+//            if (user != null) {
+//                return user;
+//            } else {
+//                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response body");
+//            }
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User is not authenticated");
+//        }
+//    }
 
     public List<Review> getReviewsByUserId(Long userId) {
         return reviewRepository.findByUserId(userId);

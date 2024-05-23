@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.review.controller;
 
 import id.ac.ui.cs.advprog.review.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import id.ac.ui.cs.advprog.review.dto.ReviewDTO;
@@ -9,10 +10,12 @@ import id.ac.ui.cs.advprog.review.model.Review;
 import id.ac.ui.cs.advprog.review.service.ReviewService;
 import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.*;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/api/reviews")
 public class ReviewController {
     private static final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
@@ -27,6 +30,39 @@ public class ReviewController {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @GetMapping
+    public ResponseEntity<List<Review>> getReviews(@RequestParam(value = "boxId", required = false) String boxId) {
+        List<Review> reviews;
+
+        if (boxId != null) {
+            reviews = reviewService.getReviewsByBoxId(boxId);
+        } else {
+            reviews = reviewService.getAllReviews();
+        }
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<?> getReviewById(@PathVariable Long reviewId) {
+        try {
+            Review review = reviewService.getReviewById(reviewId);
+            return ResponseEntity.ok(review);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{reviewId}/accept")
+    public ResponseEntity<?> acceptReview(@PathVariable Long reviewId) {
+        try {
+            reviewService.acceptReview(reviewId);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
 //    @PostMapping
 //    public ResponseEntity<?> createReview(@RequestHeader("Authorization") String token, @RequestBody ReviewDTO reviewDTO) {
 //        System.out.println("Token received: " + token);
@@ -37,21 +73,21 @@ public class ReviewController {
 //        return ResponseEntity.ok(review);
 //    }
 
-    @PostMapping
-    public ResponseEntity<?> createReview(@RequestHeader("Authorization") String token, @RequestBody ReviewDTO reviewDTO) {
-        System.out.println("Token received: " + token);
-        User user = reviewService.getAuthenticatedUser(token);
-
-        // Set the default status to PENDING if not provided in the request
-        if (reviewDTO.getStatus() == null || reviewDTO.getStatus().isEmpty()) {
-            reviewDTO.setStatus("PENDING");
-        }
-
-        // Create and add the review using the service method
-        Review review = reviewService.addReview(reviewDTO, user.getId());
-
-        return ResponseEntity.ok(review);
-    }
+//    @PostMapping
+//    public ResponseEntity<?> createReview(@RequestHeader("Authorization") String token, @RequestBody ReviewDTO reviewDTO) {
+//        System.out.println("Token received: " + token);
+//        User user = reviewService.getAuthenticatedUser(token);
+//
+//        // Set the default status to PENDING if not provided in the request
+//        if (reviewDTO.getStatus() == null || reviewDTO.getStatus().isEmpty()) {
+//            reviewDTO.setStatus("PENDING");
+//        }
+//
+//        // Create and add the review using the service method
+//        Review review = reviewService.addReview(reviewDTO, user.getId());
+//
+//        return ResponseEntity.ok(review);
+//    }
 
 
 

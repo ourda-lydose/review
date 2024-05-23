@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.review.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,12 +30,31 @@ public class Review {
     private String reviewText;
 
     @Transient
+    @JsonIgnore
     private ReviewState status;
 
-//     for DB
-//    @Enumerated(EnumType.STRING)
     @Column(name = "status_string", nullable = false)
     private String statusString;
+
+    //reference: https://stackoverflow.com/questions/30595534/persisting-restoring-current-state-in-spring-statemachine
+    @PostLoad
+    private void initStatus() {
+        switch (statusString) {
+            case "PENDING":
+                this.status = new PendingState(this);
+                break;
+            case "APPROVED":
+                this.status = new ApprovedState(this);
+                break;
+            case "REJECTED":
+                this.status = new RejectedState(this);
+                break;
+            default:
+                throw new IllegalStateException("Invalid status string: " + statusString);
+        }
+    }
+
+    public Review (){}
 
     public Review(Long reviewId, String boxId, Integer userId, int rating, String reviewText){
         if (rating < 1 || rating > 5) {
@@ -52,11 +72,6 @@ public class Review {
         this.status = new PendingState(this);
         this.statusString = PENDING.toString();
     }
-
-    public Review() {
-
-    }
-
 
     public void approveReview() {
         this.status.approveReview();
