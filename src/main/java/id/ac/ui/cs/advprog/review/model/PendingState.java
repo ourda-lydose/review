@@ -14,15 +14,18 @@ public class PendingState implements ReviewState {
         review.setRating(newRating);
         review.setReviewText(newReviewText);
         review.setStatus(new PendingState(review));
+        review.setStatusString(StatusEnum.PENDING.toString());
     }
 
     @Override
     public void approveReview() {
         review.setStatus(new ApprovedState(review));
+        review.setStatusString(StatusEnum.APPROVED.toString());
     }
 
     @Override
     public void rejectReview() {
         review.setStatus(new RejectedState(review));
+        review.setStatusString(StatusEnum.REJECTED.toString());
     }
 }

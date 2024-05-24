@@ -78,7 +78,7 @@ public class ReviewController {
     }
 
     @GetMapping("/box/{boxId}")
-    public ResponseEntity<List<Review>> getReviewsByBox(@RequestParam(value = "rating", required = false) Integer rating, String boxId) {
+    public ResponseEntity<List<Review>> getReviewsByBoxId(@RequestParam(value = "rating", required = false) Integer rating, @PathVariable String boxId) {
         List<Review> reviews;
 
         if (rating != null) {
