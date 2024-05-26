@@ -131,96 +131,77 @@ class ReviewServiceTest {
 
     @Test
     void testUpdateReview_UserNotAuthor() {
-        // Given
         Long reviewId = 1L;
-        Integer userId = 2; // Different user ID than the review's author
+        Integer userId = 2;
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setRating(5);
         reviewDTO.setReviewText("Updated review text");
         Review mockReview = new Review("28ab0b8c-b580-46db-8308-a758e4bac948", 1, 5, "Great product!");
         mockReview.setReviewId(reviewId);
 
-        // When
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
 
-        // Then
         assertThrows(IllegalArgumentException.class, () -> reviewService.updateReview(reviewId, reviewDTO, userId));
         verify(reviewRepository, never()).save(any());
     }
 
     @Test
     void testUpdateReview_InvalidRating() {
-        // Given
         Long reviewId = 1L;
         Integer userId = 1;
         ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setRating(6); // Invalid rating
+        reviewDTO.setRating(6);
         reviewDTO.setReviewText("Updated review text");
         Review mockReview = new Review("28ab0b8c-b580-46db-8308-a758e4bac948", 1, 5, "Great product!");
         mockReview.setReviewId(reviewId);
 
-        // When
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
 
-        // Then
         assertThrows(IllegalArgumentException.class, () -> reviewService.updateReview(reviewId, reviewDTO, userId));
         verify(reviewRepository, never()).save(any());
     }
 
     @Test
     void testUpdateReview_EmptyReviewText() {
-        // Given
         Long reviewId = 1L;
         Integer userId = 1;
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setRating(4);
-        reviewDTO.setReviewText(""); // Empty review text
+        reviewDTO.setReviewText("");
         Review mockReview = new Review("28ab0b8c-b580-46db-8308-a758e4bac948", 1, 5, "Great product!");
         mockReview.setReviewId(reviewId);
 
-        // When
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
 
-        // Then
         assertThrows(IllegalArgumentException.class, () -> reviewService.updateReview(reviewId, reviewDTO, userId));
         verify(reviewRepository, never()).save(any());
     }
 
     @Test
     void testDeleteReview_ReviewNotFound() {
-        // Given
         Long reviewId = 1L;
 
-        // When
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
 
-        // Then
         assertThrows(NoSuchElementException.class, () -> reviewService.deleteReview(reviewId));
         verify(reviewRepository, never()).delete(any());
     }
 
     @Test
     void testAcceptReview_ReviewNotFound() {
-        // Given
         Long reviewId = 1L;
 
-        // When
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
 
-        // Then
         assertThrows(NoSuchElementException.class, () -> reviewService.acceptReview(reviewId));
         verify(reviewRepository, never()).save(any());
     }
 
     @Test
     void testRejectReview_ReviewNotFound() {
-        // Given
         Long reviewId = 1L;
 
-        // When
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
-
-        // Then
         assertThrows(NoSuchElementException.class, () -> reviewService.rejectReview(reviewId));
         verify(reviewRepository, never()).save(any());
     }
