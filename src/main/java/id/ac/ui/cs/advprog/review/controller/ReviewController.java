@@ -35,8 +35,6 @@ public class ReviewController {
         });
     }
 
-    // TODO: validate user
-
     @PutMapping("/{reviewId}")
     public ResponseEntity<?> updateReview(@PathVariable Long reviewId,
                                           @RequestBody ReviewDTO reviewDTO,
