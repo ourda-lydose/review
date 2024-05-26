@@ -1,13 +1,9 @@
-name: Continuous Deployment (CD)
+
+name: Continous Deployment (CD)
 
 on:
-  workflow_run:
-    workflows:
-      - "Continuous Integration (CI)"
-    branches:
-      - main
-    types:
-      - completed
+  push:
+  pull_request:
 
 jobs:
   build:
@@ -15,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@master
 
       - name: Setup GCP Service Account
         uses: google-github-actions/setup-gcloud@v0
@@ -47,4 +43,5 @@ jobs:
           --project ${{ secrets.GCP_PROJECT_ID }} \
           --set-env-vars=PG_HOST=${{ secrets.PG_HOST }} \
           --set-env-vars=PG_USER=${{ secrets.PG_USER }} \
-          --set-env-vars=PG_PASS=${{ secrets.PG_PASS }}
+          --set-env-vars=PG_PASS=${{ secrets.PG_PASS }} \
+          --set-env-vars=JWT_SECRET=${{ secrets.JWT_SECRET }}
