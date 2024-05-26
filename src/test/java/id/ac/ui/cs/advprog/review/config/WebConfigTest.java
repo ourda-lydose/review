@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.review.WebConfig;
+package id.ac.ui.cs.advprog.review.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
