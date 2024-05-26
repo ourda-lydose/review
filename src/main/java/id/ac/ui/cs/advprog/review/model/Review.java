@@ -82,6 +82,6 @@ public class Review {
     }
 
     public void updateReview(int newRating, String newReviewText) {
-        this.status.editReview(newRating, newReviewText);
+        this.status.updateReview(newRating, newReviewText);
     }
 }

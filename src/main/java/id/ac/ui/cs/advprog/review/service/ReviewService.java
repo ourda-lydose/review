@@ -47,7 +47,6 @@ public class ReviewService {
         return optionalReview.orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
     }
 
-    // TODO: implement throw error if needed (will implement this asap)
     public List<Review> getReviewsByBoxIdAndRating(String boxId, int rating) {
         return reviewRepository.findByBoxIdAndRating(boxId, rating);
     }
@@ -60,11 +59,24 @@ public class ReviewService {
         return CompletableFuture.completedFuture(savedReview);
     }
 
-    public Review updateReview(Long reviewId, ReviewDTO reviewDTO) {
+    public Review updateReview(Long reviewId, ReviewDTO reviewDTO, Integer userId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
 
-        // TODO: validate user input, return error if any constraint is violated
+        if (userId != -1 && !review.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("You are not the author of the review.");
+        }
+
+        int rating = reviewDTO.getRating();
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5.");
+        }
+
+        String reviewText = reviewDTO.getReviewText();
+        if (reviewText == null || reviewText.trim().isEmpty()) {
+            throw new IllegalArgumentException("Review text cannot be empty.");
+        }
+
         review.updateReview(reviewDTO.getRating(), reviewDTO.getReviewText());
         return reviewRepository.save(review);
     }
@@ -75,21 +87,17 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-    // TODO: make sure only admin can access this (implement on api gateway)
-    // TODO: return error/text if state not compatible
     public void acceptReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " notTTTTTTT found"));
+                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
 
         review.approveReview();
         reviewRepository.save(review);
     }
 
-    // TODO: make sure only admin can access this (implement on api gateway)
-    // TODO: return error/text if state not compatible
     public void rejectReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " notTTTTTTT found"));
+                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
 
         review.rejectReview();
         reviewRepository.save(review);

@@ -8,6 +8,8 @@ import id.ac.ui.cs.advprog.review.dto.ReviewDTO;
 import id.ac.ui.cs.advprog.review.model.Review;
 import id.ac.ui.cs.advprog.review.service.ReviewService;
 import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,17 +36,26 @@ public class ReviewController {
     }
 
     // TODO: validate user
+
     @PutMapping("/{reviewId}")
-    public ResponseEntity<?> updateReview(@PathVariable Long reviewId, @RequestBody ReviewDTO reviewDTO) {
+    public ResponseEntity<?> updateReview(@PathVariable Long reviewId,
+                                          @RequestBody ReviewDTO reviewDTO,
+                                          @RequestHeader(name = "X-userid") Integer userId) {
+
         try {
-            Review updatedReview = reviewService.updateReview(reviewId, reviewDTO);
+            Review updatedReview = reviewService.updateReview(reviewId, reviewDTO, userId);
             return ResponseEntity.ok(updatedReview);
+
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    // TODO: validate user
+
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
         try {
@@ -56,7 +67,7 @@ public class ReviewController {
     }
 
     @GetMapping("/{reviewId}")
-    public ResponseEntity<?> getReviewById(@PathVariable Long reviewId) {
+    public ResponseEntity<?> getReviewById(@PathVariable("reviewId") Long reviewId) {
         try {
             Review review = reviewService.getReviewById(reviewId);
             return ResponseEntity.ok(review);
@@ -66,19 +77,14 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Review>> getReviews(@RequestParam(value = "boxId", required = false) String boxId) {
+    public ResponseEntity<List<Review>> getReviews() {
         List<Review> reviews;
-
-        if (boxId != null) {
-            reviews = reviewService.getReviewsByBoxId(boxId);
-        } else {
-            reviews = reviewService.getAllReviews();
-        }
+        reviews = reviewService.getAllReviews();
         return ResponseEntity.ok(reviews);
     }
 
     @GetMapping("/box/{boxId}")
-    public ResponseEntity<List<Review>> getReviewsByBox(@RequestParam(value = "rating", required = false) Integer rating, String boxId) {
+    public ResponseEntity<List<Review>> getReviewsByBox(@PathVariable String boxId, @RequestParam(value = "rating", required = false) Integer rating) {
         List<Review> reviews;
 
         if (rating != null) {

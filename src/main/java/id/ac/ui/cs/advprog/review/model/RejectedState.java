@@ -12,6 +12,8 @@ public class RejectedState implements ReviewState {
         review.setRating(newRating);
         review.setReviewText(newReviewText);
         review.setStatus(new PendingState(review));
+        review.setStatusString(StatusEnum.PENDING.toString());
+
     }
 
     @Override
