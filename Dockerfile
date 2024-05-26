@@ -1,6 +1,6 @@
 FROM docker.io/library/eclipse-temurin:21-jdk-alpine AS builder
 
-WORKDIR /src/eshop
+WORKDIR /src/review
 COPY . .
 RUN chmod +x ./gradlew
 RUN ./gradlew clean bootjar
@@ -16,7 +16,7 @@ RUN addgroup -g ${USER_GID} ${USER_NAME} \
 
 USER ${USER_NAME}
 WORKDIR /opt/reivew
-COPY --from=builder --chown=${USER_UID}:${USER_GID} /src/eshop/build/libs/*.jar app.jar
+COPY --from=builder --chown=${USER_UID}:${USER_GID} /src/review/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
