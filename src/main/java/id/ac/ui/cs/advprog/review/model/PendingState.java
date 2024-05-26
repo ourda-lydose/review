@@ -1,6 +1,8 @@
 package id.ac.ui.cs.advprog.review.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.time.LocalDateTime;
+
 @JsonIgnoreProperties(value = {"review"})
 public class PendingState implements ReviewState {
     private final Review review;
@@ -15,7 +17,7 @@ public class PendingState implements ReviewState {
         review.setReviewText(newReviewText);
         review.setStatus(new PendingState(review));
         review.setStatusString(StatusEnum.PENDING.toString());
-
+        review.setLastModified(LocalDateTime.now());
     }
 
     @Override

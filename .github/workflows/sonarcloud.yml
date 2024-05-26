@@ -1,0 +1,45 @@
+
+name: SonarCloud
+on: push
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin" # Alternative distribution options are available
+          java-version: "21"
+          cache: "gradle"
+      - name: Set gradlew as executable
+        run: chmod +x ./gradlew
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: run tests
+        run: ./gradlew test jacocoTestReport
+      - name: Build and analyze
+        uses: sonarsource/sonarcloud-github-action@6bbd64e0cb2194e04addb429d669a9ee873eeeef
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args:
+            -Dsonar.projectKey=ourda-lydose_review
+            -Dsonar.organization=ourda!lydose
+            -Dsonar.java.binaries=.
+            -Dsonar.sources=src/main/java
+            -Dsonar.tests=src/test/java
