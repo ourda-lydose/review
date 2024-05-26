@@ -43,7 +43,7 @@ public class Review {
 
     //reference: https://stackoverflow.com/questions/30595534/persisting-restoring-current-state-in-spring-statemachine
     @PostLoad
-    private void initStatus() {
+    public void initStatus() {
         switch (statusString) {
             case "PENDING":
                 this.status = new PendingState(this);
