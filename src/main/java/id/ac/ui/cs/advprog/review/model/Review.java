@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 import static id.ac.ui.cs.advprog.review.model.StatusEnum.*;
 
 @Getter
@@ -35,6 +37,9 @@ public class Review {
 
     @Column(name = "status_string", nullable = false)
     private String statusString;
+
+    @Column(name = "last_modified")
+    private LocalDateTime lastModified;
 
     //reference: https://stackoverflow.com/questions/30595534/persisting-restoring-current-state-in-spring-statemachine
     @PostLoad
@@ -71,6 +76,7 @@ public class Review {
         this.reviewText = reviewText;
         this.status = new PendingState(this);
         this.statusString = PENDING.toString();
+        this.lastModified = LocalDateTime.now();
     }
 
     public void approveReview() {

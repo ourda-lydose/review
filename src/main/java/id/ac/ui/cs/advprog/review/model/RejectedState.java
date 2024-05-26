@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.review.model;
 
+import java.time.LocalDateTime;
+
 public class RejectedState implements ReviewState {
     private final Review review;
 
@@ -13,7 +15,7 @@ public class RejectedState implements ReviewState {
         review.setReviewText(newReviewText);
         review.setStatus(new PendingState(review));
         review.setStatusString(StatusEnum.PENDING.toString());
-
+        review.setLastModified(LocalDateTime.now());
     }
 
     @Override
