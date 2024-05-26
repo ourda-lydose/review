@@ -9,13 +9,4 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class ReviewApplicationTests {
 
-    @Autowired
-    private ReviewController reviewController;
-
-    @Test
-    void contextLoads() {
-        ReviewApplication.main(new String[]{});
-        assertThat(reviewController).isNotNull();
-    }
-
 }

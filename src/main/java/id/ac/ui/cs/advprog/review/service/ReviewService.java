@@ -24,8 +24,6 @@ import java.util.logging.Logger;
 
 @Service
 public class ReviewService {
-    private static final Logger logger = Logger.getLogger(ReviewService.class.getName());
-
     private final ReviewRepository reviewRepository;
 
     @Autowired

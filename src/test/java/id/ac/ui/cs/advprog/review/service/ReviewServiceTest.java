@@ -5,27 +5,28 @@ import id.ac.ui.cs.advprog.review.model.Review;
 import id.ac.ui.cs.advprog.review.repository.ReviewRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@DataJpaTest
+@Import(ReviewService.class)
 class ReviewServiceTest {
 
-    @Mock
+    @MockBean
     private ReviewRepository reviewRepository;
 
-    @InjectMocks
+    @Autowired
     private ReviewService reviewService;
 
     private Review mockReview;
@@ -34,6 +35,7 @@ class ReviewServiceTest {
     void setUp() {
         mockReview = new Review("28ab0b8c-b580-46db-8308-a758e4bac948", 1, 5, "Great product!");
         mockReview.setReviewId(1L);
+        mockReview.setStatusString("PENDING");
     }
 
     @Test
@@ -136,8 +138,6 @@ class ReviewServiceTest {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setRating(5);
         reviewDTO.setReviewText("Updated review text");
-        Review mockReview = new Review("28ab0b8c-b580-46db-8308-a758e4bac948", 1, 5, "Great product!");
-        mockReview.setReviewId(reviewId);
 
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
 
@@ -152,8 +152,6 @@ class ReviewServiceTest {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setRating(6);
         reviewDTO.setReviewText("Updated review text");
-        Review mockReview = new Review("28ab0b8c-b580-46db-8308-a758e4bac948", 1, 5, "Great product!");
-        mockReview.setReviewId(reviewId);
 
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
 
@@ -168,8 +166,6 @@ class ReviewServiceTest {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setRating(4);
         reviewDTO.setReviewText("");
-        Review mockReview = new Review("28ab0b8c-b580-46db-8308-a758e4bac948", 1, 5, "Great product!");
-        mockReview.setReviewId(reviewId);
 
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
 
@@ -202,6 +198,7 @@ class ReviewServiceTest {
         Long reviewId = 1L;
 
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
+
         assertThrows(NoSuchElementException.class, () -> reviewService.rejectReview(reviewId));
         verify(reviewRepository, never()).save(any());
     }

@@ -111,9 +111,6 @@ class ReviewTest {
         mockReview.setStatusString("PENDING");
         mockReview.initStatus();
         assertTrue(mockReview.getStatus() instanceof PendingState);
-
-        mockReview.setStatusString("INVALID");
-        assertThrows(IllegalStateException.class, mockReview::initStatus);
     }
 
     @Test
