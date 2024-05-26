@@ -1,5 +1,6 @@
 
-package id.ac.ui.cs.advprog.subscriptionbox.config;
+package id.ac.ui.cs.advprog.review.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
