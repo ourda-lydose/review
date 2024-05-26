@@ -39,7 +39,7 @@ jobs:
         with:
           args:
             -Dsonar.projectKey=ourda-lydose_review
-            -Dsonar.organization=ourda!lydose
+            -Dsonar.organization=ourda-lydose123
             -Dsonar.java.binaries=.
             -Dsonar.sources=src/main/java
             -Dsonar.tests=src/test/java
