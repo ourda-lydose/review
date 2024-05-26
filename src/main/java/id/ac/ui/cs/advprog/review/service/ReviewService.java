@@ -26,6 +26,9 @@ import java.util.logging.Logger;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
 
+    private String NOT_FOUND = "NOT FOUND";
+    private String INVALID_ID_PREFIX = "Review with ID";
+
     @Autowired
     public ReviewService(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;
@@ -42,7 +45,7 @@ public class ReviewService {
 
     public Review getReviewById(Long reviewId) {
         Optional<Review> optionalReview = reviewRepository.findById(reviewId);
-        return optionalReview.orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
+        return optionalReview.orElseThrow(() -> new NoSuchElementException(INVALID_ID_PREFIX + reviewId + NOT_FOUND));
     }
 
     public List<Review> getReviewsByBoxIdAndRating(String boxId, int rating) {
@@ -59,7 +62,7 @@ public class ReviewService {
 
     public Review updateReview(Long reviewId, ReviewDTO reviewDTO, Integer userId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
+                .orElseThrow(() -> new NoSuchElementException(INVALID_ID_PREFIX + reviewId + NOT_FOUND));
 
         if (userId != -1 && !review.getUserId().equals(userId)) {
             throw new IllegalArgumentException("You are not the author of the review.");
@@ -81,13 +84,13 @@ public class ReviewService {
 
     public void deleteReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
+                .orElseThrow(() -> new NoSuchElementException(INVALID_ID_PREFIX + reviewId + NOT_FOUND));
         reviewRepository.delete(review);
     }
 
     public void acceptReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
+                .orElseThrow(() -> new NoSuchElementException(INVALID_ID_PREFIX + reviewId + NOT_FOUND));
 
         review.approveReview();
         reviewRepository.save(review);
@@ -95,7 +98,7 @@ public class ReviewService {
 
     public void rejectReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NoSuchElementException("Review with ID " + reviewId + " not found"));
+                .orElseThrow(() -> new NoSuchElementException(INVALID_ID_PREFIX + reviewId + NOT_FOUND));
 
         review.rejectReview();
         reviewRepository.save(review);

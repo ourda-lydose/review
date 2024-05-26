@@ -20,6 +20,4 @@ public class ReviewDTO {
 
     @NotEmpty(message = "Review text can't be empty")
     private String reviewText;
-
-    private String statusString;
 }

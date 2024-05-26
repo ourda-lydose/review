@@ -25,5 +25,6 @@ public class RejectedState implements ReviewState {
 
     @Override
     public void rejectReview() {
+        // rejecting rejected state
     }
 }

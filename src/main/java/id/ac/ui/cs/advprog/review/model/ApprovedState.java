@@ -20,6 +20,7 @@ public class ApprovedState implements ReviewState {
 
     @Override
     public void approveReview() {
+        //approving approved state
     }
 
     @Override

@@ -54,6 +54,8 @@ public class Review {
             case "REJECTED":
                 this.status = new RejectedState(this);
                 break;
+            default:
+                throw new IllegalStateException("Invalid status string: " + statusString);
         }
     }
 
